@@ -2,7 +2,7 @@
 """
 Created on Fri Dec 13 13:41:42 2013
 
-@author: edwards7011
+@author: David Edwards
 """
 import datetime
 
