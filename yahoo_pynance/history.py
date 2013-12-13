@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 11 21:21:06 2013
 
-@author: edwards7011
+@author: David Edwards
 """
 from urllib2 import Request, urlopen
 from utils import str_to_dt
