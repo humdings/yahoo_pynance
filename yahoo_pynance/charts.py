@@ -2,7 +2,7 @@
 """
 Created on Fri Dec 13 12:21:10 2013
 
-@author: edwards7011
+@author: David Edwards
 """
 
 import os
