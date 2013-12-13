@@ -2,7 +2,7 @@
 """
 Created on Thu Dec 12 11:18:17 2013
 
-@author: David
+@author: David Edwards
 
 
 This module relies on pandas.
