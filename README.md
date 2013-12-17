@@ -4,8 +4,8 @@ yahoo_pynance
 Python tools for the Yahoo finance csv API.
 
 Each stock object has access to its quotes, history, and charts.
-I have found it to be really easy to work with and its plays nicely with
-pandas. 
+pynance only depends on the standard library but works well
+with Pandas DataFrames. 
 
 ``` 
 >>> google = Stock('GOOG')
