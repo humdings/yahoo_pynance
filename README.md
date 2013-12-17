@@ -7,7 +7,7 @@ Each stock object has access to its quotes, history, and charts.
 I have found it to be really easy to work with and its plays nicely with
 pandas. 
 
-   
+``` 
 >>> google = Stock('GOOG')
 
 >>> google
@@ -56,4 +56,6 @@ pandas.
  datetime.datetime(2013, 12, 12, 0, 0): 1595900.0,
  datetime.datetime(2013, 12, 13, 0, 0): 2162400.0,
  datetime.datetime(2013, 12, 16, 0, 0): 1602000.0}
+ 
+ ```
 
