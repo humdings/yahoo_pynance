@@ -16,8 +16,10 @@ with Pandas DataFrames.
 >>> google
 <GOOG: 2013-12-18 18:36:45.409000>
 >>>
->>> google.price 1084.75 
->>> google.price_earnings_growth_ratio 1.54 
+>>> google.price 
+1084.75 
+>>> google.price_earnings_growth_ratio 
+1.54 
 >>>
 >>> today = datetime.datetime.today() 
 >>> a_few_days_ago = today - datetime.timedelta(days=3) 
@@ -46,7 +48,5 @@ with Pandas DataFrames.
  datetime.datetime(2013, 12, 17, 0, 0): 1069.86} 
 >>> history.prices(as_list=True) 
 [1072.98, 1069.86] 
-
- 
  ```
 
