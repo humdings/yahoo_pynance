@@ -142,7 +142,7 @@ class StockHistory(object):
             date: self.data[date][field] for date in self.dates
         }
         if kwargs.get('as_list', False):
-            return data.values()
+            return [v for k, v in sorted(data.items())]
         return data
         
     def fields(self, *fields):
