@@ -89,7 +89,7 @@ def str_to_dt(date):
 def _historical_data(sym, start_date, end_date, **kwargs):
     start_date = str(start_date)
     end_date = str(end_date)
-    url = 'http://ichart.yahoo.com/table.csv?'  
+    url = 'http://ichart.finance.yahoo.com/table.csv?' 
     url += 's={}&a={}&b={}&c={}&d={}&e={}&f={}&g={}'.format(  
         sym,  
         str(int(start_date[5:7]) - 1),  
