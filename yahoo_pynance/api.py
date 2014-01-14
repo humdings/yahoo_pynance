@@ -4,64 +4,13 @@ Created on Wed Dec 18 2013
 @author: David Edwards
 
 
-Yahoo Pynance Core
+Yahoo Pynance API
+Depends on the Python 2.7 standard lib.
 
-This module only depends on the Python 2.7 standard lib.
-It is intended to be a high level API for Yahoo Finance csv data.
-
-API Reference 
+API Reference
 http://code.google.com/p/yahoo-finance-managed/wiki/CSVAPI
-
-
-FUNCTIONS:
-
-str_to_dt():
-    convert yahoo date strings to datetime objects
-    
-    input: yahoo_date_string
-    output: datetime.datetime object
-
-_historical_data():
-    used by the StockHistory class to get raw data
-    input: ticker, start_date, end_date
-    output: dict of dicts
-    e.g.
-    
-    {datetime.datetime(2013, 11, 13, 0, 0): {'Adj Close': 1032.47,
-                                            'Close': 1032.47,
-                                            'High': 1032.85,
-                                            'Low': 1006.5,
-                                            'Open': 1006.75,
-                                            'Volume': 1579400.0},
-    ...
-    ...
-    }
-    
-sector_data:
-    Reads the rows of the sector/industry/company csv
-    into a list of the rows.
-    see below for more
-
-sector_dict:
-    puts sector_data into a dict with the format
-            'industry_name': {fields: values}
-            
-    e.g.
-    {'Healthcare': {'1-Day Price Chg %': -0.59,
-                    'Debt to Equity': 74.877,
-                    'Div. Yield %': 2.627,
-                    'Market Cap': '83045.59B',
-                    'Net Profit Margin (mrq)': 16.661,
-                    'P/E': 28.574,
-                    'Price To Free Cash Flow (mrq)': 218.548,
-                    'Price to Book': 34.871,
-                    'ROE %': 19.842},
-     ...
-     ...
-    }
-    
-
 '''
+
 
 import os
 import datetime
@@ -74,7 +23,7 @@ from urllib import urlencode, urlretrieve
 
 
 def str_to_dt(date):
-    ''' Converts Yahoo Date Strings to datetime objects. '''
+    ''' Converts Yahoo Date Strings (YYYY-MM-DD) to datetime objects. '''
     yr = int(date[0:4])
     mo = int(date[5:7])
     day = int(date[8:10])
@@ -111,7 +60,16 @@ def _historical_data(sym, start_date, end_date, **kwargs):
             except ValueError:
                 hist_dict[date][keys[i]] = day_data[i]
     return hist_dict    
-    
+
+def _quote_request(symbol, stat):
+    url = "http://download.finance.yahoo.com/d/quotes.csv?s=%s&f=%s" %(
+        symbol, 
+        stat
+    )
+    req = Request(url)
+    response = urlopen(req)
+    return str(response.read().decode('utf-8').strip())
+
 
 class StockHistory(object):
     """
@@ -138,32 +96,32 @@ class StockHistory(object):
         if kwargs.get('as_list', False):
             return [v for k, v in sorted(data.items())]
         return data
-        
+
     def fields(self, *fields):
         data ={}
         for dt in self.dates:
             data[dt] = {field: self.data[dt][field] for field in fields}
         return data
-        
+
     def volumes(self, **kwargs):
         return self._field('Volume', **kwargs)
-    
+
     def prices(self, **kwargs):
         return self._field('Adj Close', **kwargs)
-    
+
     def close_prices(self, **kwargs):
         return self._field('Close', **kwargs)
-    
+
     def open_prices(self, **kwargs):
         return self._field('Open', **kwargs)
-    
+
     def highs(self, **kwargs):
         return self._field('High', **kwargs)
-    
+
     def lows(self, **kwargs):
         return self._field('Low', **kwargs)
-    
-    
+
+
 """
 INDUSTRY SECTORS
 
@@ -236,7 +194,6 @@ def sector_dict(**kwargs):
     return d
 
 
-
 class StockChart():
     """
     Gets a stock chart from Yahoo that can be opened in
@@ -266,14 +223,14 @@ class StockChart():
         self.symbol = symbol
         self.kwargs = kwargs
         self.url = self._url()
-        
+
     def open_in_browser(self):
         webbrowser.open_new(self.url)
-    
+
     def save(self, path):
         urlretrieve(self.url, path)
         self.abspath = os.path.abspath(path)
-        
+
     def _url(self):
         kwargs = self.kwargs
         symbol = self.symbol
@@ -340,13 +297,13 @@ class Stock(object):
         self.timestamp = datetime.datetime.now()
         for quote in self.all:
             self.__dict__[quote] = self.all[quote]
-    
+
     def __getitem__(self,item):
         return self.all[item]
-    
+
     def __iter__(self):
         return iter(self.all)
-        
+
     def __repr__(self):
         return "<%s: %s>"%(self.symbol, self.timestamp)
     
@@ -367,12 +324,12 @@ class Stock(object):
             except ValueError:
                 pass
         return quotes
-        
+
     def chart(self, **kwargs):
         return StockChart(self.symbol, **kwargs)
-    
+
     def history(self, start_date, end_date, **kwargs):
         return StockHistory(self.symbol, start_date, end_date, **kwargs)
-        
+
     def update(self):
         self.__init__(self.symbol)
