@@ -61,7 +61,7 @@ def _historical_data(sym, start_date, end_date, **kwargs):
                 hist_dict[date][keys[i]] = day_data[i]
     return hist_dict    
 
-def _quote_request(symbol, stat):
+def quote_request(symbol, stat):
     url = "http://download.finance.yahoo.com/d/quotes.csv?s=%s&f=%s" %(
         symbol, 
         stat
