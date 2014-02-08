@@ -79,7 +79,7 @@ class StockHistory(object):
         'd' ==> days,
         'w' ==> weeks,
         'm' ==> monthts,
-        'v' ==> dividends only. Warning, this raises a KeyError 
+        'v' ==> dividends only. Warning, raises a KeyError 
                                 if a stock doesn't offer dividends.
     """
     def __init__(self, symbol, start_date, end_date, **kwargs):
@@ -205,14 +205,14 @@ class StockChart():
     below.
 
     keyword arguments:
-        timespan: 1d, 5d, 3m, 6m, 1y, 2y, 5y, my (max years)
-            eg: tspan = 3m 
+        tspan: 1d, 5d, 3m, 6m, 1y, 2y, 5y, my (max years)
+            eg: tspan = '3m' 
         type: line=l, bar=b, candle=c
-            eg: type = b   
+            eg: type = 'b'   
         scale: on/off for logarithmic/linear
-            eg: scale = on
+            eg: scale = 'on'
         size: s, m, l
-            eg: size=m
+            eg: size = 'm'
         avgs: moving average indicators.
             pass a list of day lengths as strings prepended
             with 'e' for exponential and 'm' for simple.
@@ -249,18 +249,13 @@ class StockChart():
 
 class Stock(object):
     '''
-    A timestamped Stock object with the most
-    recent quotes according to Yahoo.
+    Most recent stock quote according to Yahoo.
+    Most fields are included, all possible fields can be found at:
+    
+    https://code.google.com/p/yahoo-finance-managed/wiki/enumQuoteProperty
 
     NOTE: Yahoo csv data can be up to 15 min delayed.
 
-    Methods:
-        self.history(start_date, end_date) ==> StockHistory obj
-        
-        self.chart(**kwargs) ==> StockChart obj
-        
-        self.update() ==> call self.__init__() to update quotes.
-    
     '''
     fields = {
         'price': 'l1', 
@@ -284,12 +279,9 @@ class Stock(object):
         'price_book_ratio': 'p6',
         'short_ratio': 's7', 
         'revenue': 's6',
-        'shares_outstanding': 'j2',
-        'shares_owned': 's1',
         'pct_change_from_50_day_MA':'m8',
         'pct_change_from_200_day_MA': 'm6', 
         'one_yr_target_price': 't8',
-        'dividend_pay_date': 'r1',
     }
     def __init__(self, symbol):
         self.symbol = symbol
@@ -306,7 +298,7 @@ class Stock(object):
 
     def __repr__(self):
         return "<%s: %s>"%(self.symbol, self.timestamp)
-    
+
     def _quote_request(self, stat):
         url = "http://download.finance.yahoo.com/d/quotes.csv?s=%s&f=%s" %(
             self.symbol, 
@@ -315,9 +307,13 @@ class Stock(object):
         req = Request(url)
         response = urlopen(req)
         return str(response.read().decode('utf-8').strip())
-    
+
     def _all_quote_data(self):
-        quotes = {i: self._quote_request(self.fields[i]) for i in self.fields}
+        s = ''
+        for i in self.fields.values():
+            s += i 
+        data = [i.strip('" ') for i in self._quote_request(s).split(',')]
+        quotes = dict(zip(self.fields.keys(), data))
         for q in quotes:
             try:
                 quotes[q] = float(quotes[q])
