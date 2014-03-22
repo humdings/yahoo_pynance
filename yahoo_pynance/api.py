@@ -4,8 +4,11 @@ Created on Wed Dec 18 2013
 @author: David Edwards
 
 
-Yahoo Pynance API
-Depends on the Python 2.7 standard lib.
+
+Python 2.7 standard library only implementation of the Yahoo Finance API.
+
+See https://github.com/humdings/pynance for a version implemented 
+with pandas.
 
 API Reference
 http://code.google.com/p/yahoo-finance-managed/wiki/CSVAPI
